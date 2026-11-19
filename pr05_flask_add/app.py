@@ -2,7 +2,7 @@
 import os
 import sqlite3
 
-from flask import Flask, render_template
+from flask import Flask, redirect, render_template, request
 
 # база общая с практикой 2: задачи, добавленные в консоли, видны на странице
 project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,6 +24,19 @@ def fetch_todos():
 @site.route("/")
 def todo_list():
     return render_template("index.html", todos=fetch_todos())
+
+
+@site.route("/add", methods=["POST"])
+def add_todo():
+    text = request.form.get("task_text", "").strip()
+    # required в форме можно обойти, поэтому проверяем ещё и на сервере
+    if text:
+        link = sqlite3.connect(DB_PATH)
+        link.execute("INSERT INTO todo (title) VALUES (?)", (text,))
+        link.commit()   # без commit задача не сохранится в файл
+        link.close()
+    # редирект после POST: F5 не отправит форму второй раз
+    return redirect("/")
 
 
 if __name__ == "__main__":
