@@ -40,6 +40,44 @@ def add_new():
     link.close()
 
 
+def read_number():
+    show_all()
+    raw = input("Номер задачи: ").strip()
+    try:
+        return int(raw)
+    except ValueError:
+        print("Нужно ввести число.")
+        return None
+
+
+def finish_task():
+    num = read_number()
+    if num is None:
+        return
+    link = open_db()
+    cur = link.execute("UPDATE todo SET status = 'done' WHERE id = ?", (num,))
+    link.commit()
+    changed = cur.rowcount   # 0 - такой строки нет
+    link.close()
+    print("Задача выполнена!" if changed else "Задачи с таким номером нет.")
+
+
+def remove_task():
+    num = read_number()
+    if num is None:
+        return
+    sure = input(f"Удалить задачу #{num}? да/нет: ").strip().lower()
+    if sure not in ("да", "y", "yes"):
+        print("Не удаляем.")
+        return
+    link = open_db()
+    cur = link.execute("DELETE FROM todo WHERE id = ?", (num,))
+    link.commit()
+    changed = cur.rowcount
+    link.close()
+    print("Задача удалена." if changed else "Задачи с таким номером нет.")
+
+
 def menu():
     print()
     print("s - список задач")
@@ -56,8 +94,12 @@ while True:
         show_all()
     elif cmd == "a":
         add_new()
+    elif cmd == "v":
+        finish_task()
+    elif cmd == "d":
+        remove_task()
     elif cmd == "q":
         print("Выход из программы.")
         break
     else:
-        print("Такой команды нет (или она ещё не сделана).")
+        print("Такой команды нет.")
