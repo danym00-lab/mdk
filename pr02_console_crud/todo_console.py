@@ -26,6 +26,20 @@ def show_all():
         print(f"#{rec[0]} ({flag}) {rec[1]}  статус: {rec[2]}")
 
 
+def add_new():
+    text = input("Что нужно сделать? ").strip()
+    if text == "":
+        print("Пустую задачу добавить нельзя.")
+        return
+    link = open_db()
+    cur = link.cursor()
+    # значение передаём через ?, а не склеиваем строку - защита от SQL-инъекций
+    cur.execute("INSERT INTO todo (title) VALUES (?)", (text,))
+    link.commit()
+    print("Добавлено, номер задачи:", cur.lastrowid)
+    link.close()
+
+
 def menu():
     print()
     print("s - список задач")
@@ -40,6 +54,8 @@ while True:
     cmd = input("> ").strip().lower()
     if cmd == "s":
         show_all()
+    elif cmd == "a":
+        add_new()
     elif cmd == "q":
         print("Выход из программы.")
         break
