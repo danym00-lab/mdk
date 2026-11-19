@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Мои задачи</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        table { border-collapse: collapse; }
+        td, th { border: 1px solid #999; padding: 6px 12px; }
+        .done { text-decoration: line-through; color: gray; }
+        .new-task { margin-top: 20px; }
+        .new-task input[type=text] { width: 300px; padding: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Мои задачи</h1>
+    {% if todos %}
+    <table>
+        <tr><th>№</th><th>Задача</th><th>Статус</th></tr>
+        {% for t in todos %}
+        <tr class="{{ 'done' if t['status'] == 'done' else '' }}">
+            <td>{{ t['id'] }}</td>
+            <td>{{ t['title'] }}</td>
+            <td>{{ t['status'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p>Всего задач: {{ todos|length }}</p>
+    {% else %}
+    <p>Список пуст.</p>
+    {% endif %}
+
+    <form class="new-task" method="POST" action="/add">
+        <input type="text" name="task_text" placeholder="Текст новой задачи" required>
+        <input type="submit" value="Добавить">
+    </form>
+</body>
+</html>
