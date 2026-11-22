@@ -10,10 +10,16 @@
         .done { text-decoration: line-through; color: gray; }
         .new-task { margin-top: 20px; }
         .new-task input[type=text] { width: 300px; padding: 5px; }
+        .error { color: #c00; margin-bottom: 12px; padding: 8px 12px; background: #fde0e0; border-radius: 6px; }
     </style>
 </head>
 <body>
     <h1>Мои задачи</h1>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
     {% if todos %}
     <table>
         <tr><th>№</th><th>Задача</th><th>Статус</th></tr>
