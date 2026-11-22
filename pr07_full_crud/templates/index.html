@@ -40,3 +40,30 @@
     {% if todos %}
         <ul>
             {% for t in todos %}
+                <li class="{% if t.status == 'done' %}done{% endif %}">
+                    <span class="task-title">#{{ t.id }} — {{ t.title }}</span>
+                    <span class="status">{{ t.status }}</span>
+
+                    <div class="actions">
+                        <!-- Переключить статус -->
+                        <form method="POST" action="{{ url_for('toggle_task', task_id=t.id) }}">
+                            <button type="submit" class="btn-icon" title="Переключить статус">
+                                {% if t.status == 'done' %}↩{% else %}✅{% endif %}
+                            </button>
+                        </form>
+
+                        <!-- Удалить с подтверждением -->
+                        <form method="POST"
+                              action="{{ url_for('delete_task', task_id=t.id) }}"
+                              onsubmit="return confirm('Удалить задачу #{{ t.id }}?');">
+                            <button type="submit" class="btn-icon btn-danger" title="Удалить">🗑</button>
+                        </form>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="empty">Список пуст. Добавь первую задачу!</p>
+    {% endif %}
+</body>
+</html>
